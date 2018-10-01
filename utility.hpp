@@ -1,9 +1,22 @@
 
+#ifndef __UTILITY_H__
+#define __UTILITY_H__
+
 #pragma region Includes:
 
     #include <random>      // random device, mersenne twister, uniform distributions
 
 #pragma endregion
+
+
+#pragma region Defines:
+
+    #ifndef NULL
+        #define NULL 0
+    #endif
+
+#pragma endregion
+
 
 #pragma region Templates:
 
@@ -92,4 +105,4 @@
 
 #pragma endregion
 
-
+#endif

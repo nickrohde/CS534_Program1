@@ -4,6 +4,8 @@
 #include <stdlib.h>  // rand
 #include <math.h>    // sqrt, pow
 #include <omp.h>     // OpenMP
+#include <limits>    // float max
+#include <cctype>
 #include "Timer.h"
 #include "Trip.h"
 
@@ -26,7 +28,7 @@ int main( int argc, char* argv[] ) {
   Trip trip[CHROMOSOMES];       // all 50000 different trips (or chromosomes)
   Trip shortest;                // the shortest path so far
   int coordinates[CITIES][2];   // (x, y) coordinates of all 36 cities:
-  int nThreads = 1;
+  int nThreads = N_THREADS; // N_THREADS defined in Trip.h
   
   // verify the arguments
   if ( argc == 2 )
@@ -53,7 +55,7 @@ int main( int argc, char* argv[] ) {
   omp_set_num_threads( nThreads );
 
   // find the shortest path in each generation
-  for ( int generation = 0; generation < MAX_GENERATION; generation++ ) {
+  for ( int generation = 0; generation < MAX_GENERATION; generation++ ) { //2; generation++){ //
 
     // evaluate the distance of all 50000 trips
     evaluate( trip, coordinates );
@@ -81,9 +83,41 @@ int main( int argc, char* argv[] ) {
 
     // generates TOP_X offsprings from TOP_X parenets
     crossover( parents, offsprings, coordinates );
+    int cross = 0;
+    int mut = 0;
+    for (auto i = 0; i < TOP_X; i++)
+    {
+      for (auto j = 0; j < CITIES; j++)
+      {
+        if (!isalnum(offsprings[i].itinerary[j]))
+        {
+          cout << "index " << i << " is broken after crossover!" << endl;
+          cout << "trip " << offsprings[i].itinerary << endl;
+          cross ++;
+          break;
+        }
+      }
+    }
 
     // mutate offsprings
     mutate( offsprings );
+
+    for (auto i = 0; i < TOP_X; i++)
+    {
+      for (auto j = 0; j < CITIES; j++)
+      {
+        if (!isalnum(offsprings[i].itinerary[j]))
+        {
+          cout << "index " << i << " is broken after mutate!" << endl;
+          cout << "trip " << offsprings[i].itinerary << endl;
+          mut++;
+          break;
+        }
+      }
+    }
+
+    if(cross > 0 || mut > 0)
+      cout << "broken after crossing over: " << cross << "\nbroken after mutate: " << mut << endl;
 
     // populate the next generation.
     populate( trip, offsprings );
@@ -112,7 +146,7 @@ void initialize( Trip trip[CHROMOSOMES], int coordinates[CITIES][2] ) {
   //   HU93YL0MWAQFIZGNJCRV12TO75BPE84S6KXD
   for ( int i = 0; i < CHROMOSOMES; i++ ) {
     chromosome_file >> trip[i].itinerary;
-    trip[i].fitness = 0.0;
+    trip[i].fitness = std::numeric_limits<float>::max();
   }
 
   // cities.txt:                                                                                               
