@@ -15,7 +15,7 @@
 
     void evaluate(Trip trip[CHROMOSOMES], const int coordinates[CITIES][2]);
     void crossover(const Trip parents[TOP_X], Trip offsprings[TOP_X], const int coordinates[CITIES][2]);
-    void mutate(Trip offsprings[TOP_X]);
+    void mutate(Trip offsprings[TOP_X], const int RATE);
 
     void generateComplement(const char* trip1, char* trip2);
 
@@ -45,9 +45,8 @@
         for (auto i = 0; i < CHROMOSOMES; i++)
         {
             auto& t = trip[i];
-            float d_tripLength = 0.0;
-
-            // itinerary has CITIES + 1 indices
+            float d_tripLength = distance<float>(0, 0, coordinates[translateToIndex(t.itinerary[0])][0], coordinates[translateToIndex(t.itinerary[0])][1]);
+            
             for (auto j = 0; j < CITIES - 1; j++)
             {
                 auto city_1 = translateToIndex(t.itinerary[j]);
@@ -190,20 +189,16 @@
                 // next city for both parents has already been visited
                 if (c_a_visited[index_p1] != '0' && c_a_visited[index_p2] != '0')
                 {
-                    broke = true;
-                    // find the first city that hasn't been visited
-                    for (auto k = CITIES-1; k >= 0; k--)
+                    std::size_t picked = randomIntInRange<std::size_t>(0,CITIES-1);
+                    while(c_a_visited[picked] != '0')
                     {
-                        if (c_a_visited[k] == '0')
-                        {
-                            c_a_visited[k] = '1';
-                            c1.itinerary[j] = translateToCity(k);
-                            broke = false;
-                            break;
-                        } // end if
-                    } // end for k
+                        picked = randomIntInRange<std::size_t>(0,CITIES-1);
+                    }
+
+                    c_a_visited[picked] = '1';
+                    c1.itinerary[j] = translateToCity(picked);
                 } // end if
-                else if (source_p1 <= source_p2)
+                else if (source_p1 < source_p2)
                 {
                     if (c_a_visited[index_p1] == '0')
                     {
@@ -232,14 +227,6 @@
             } // end for j
 
             generateComplement(c1.itinerary, c2.itinerary);
-            if (!((c1.itinerary[CITIES-1] >= '0' && c1.itinerary[CITIES-1] <= '9') || (c1.itinerary[CITIES-1] >= 'A' && c1.itinerary[CITIES-1] <= 'Z'))
-                || !((c2.itinerary[CITIES-1] >= '0' && c2.itinerary[CITIES-1] <= '9') || (c2.itinerary[CITIES-1] >= 'A' && c2.itinerary[CITIES-1] <= 'Z')))
-            {
-                std::cout << "parent1: " << p1.itinerary << "\nparent2: " << p2.itinerary;
-                std::cout << "\nchild1:  " << c1.itinerary << "\nchild2:  " << c2.itinerary;
-                std::string s;
-                std::cin >> s;
-            } // end if
         } // end for i
 
         delete[] c_a_visited;
@@ -264,26 +251,35 @@
     ///                          The offsprings that should be mutated. Mutations are applied directly to the objects in this array.
     /// </param>
     /// <exception cref=""></exception>
-    void mutate(Trip offsprings[TOP_X] )
+    void mutate(Trip offsprings[TOP_X], const int RATE)
     {
         for (int cur = 0; cur < TOP_X; cur++)
         {
-            if (randomIntInRange<int>(0,100) <= MUTATE_RATE)
+            //*
+            if (randomIntInRange2<int>(0,100) <= RATE)
             {
                 // pick two random cities
-                auto i = randomIntInRange<std::size_t>(0, CITIES-1);
-                auto j = randomIntInRange<std::size_t>(0, CITIES-1);
+                //auto i = randomIntInRange2<std::size_t>(0, (CITIES-1)/2);
+                //auto j = randomIntInRange2<std::size_t>((CITIES-1)/2, CITIES-1);
+                auto i = randomIntInRange2<std::size_t>(0, CITIES-1);
+                auto j = randomIntInRange2<std::size_t>(0, CITIES-1);
 
-                // ensure cities are unique
-                while (i == j)
+                while ( i == j)
                 {
-                    i = randomIntInRange<std::size_t>(0, CITIES-1);
-                } // end while
+                    j = randomIntInRange2<std::size_t>(0, CITIES-1);
+                }
 
                 char temp = offsprings[cur].itinerary[i];
                 offsprings[cur].itinerary[i] = offsprings[cur].itinerary[j];
                 offsprings[cur].itinerary[j] = temp;
             } // end if
+            //*/
+            /*
+            if (randomIntInRange<int>(0,100) <= MUTATE_RATE)
+            {
+                std::random_shuffle(offsprings[cur].itinerary, offsprings[cur].itinerary + CITIES);
+            } // end if
+            //*/
         } // end for
     } // end method mutate
 

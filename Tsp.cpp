@@ -19,7 +19,7 @@ void populate( Trip trip[CHROMOSOMES], Trip offsprings[TOP_X] );
 // need to implement for your program 1
 extern void evaluate( Trip trip[CHROMOSOMES], const int coordinates[CITIES][2] );
 extern void crossover(const Trip parents[TOP_X], Trip offsprings[TOP_X], const int coordinates[CITIES][2] );
-extern void mutate( Trip offsprings[TOP_X] );
+extern void mutate( Trip offsprings[TOP_X], const int RATE);
 
 /*
  * MAIN: usage: Tsp #threads
@@ -29,102 +29,88 @@ int main( int argc, char* argv[] ) {
   Trip shortest;                // the shortest path so far
   int coordinates[CITIES][2];   // (x, y) coordinates of all 36 cities:
   int nThreads = N_THREADS; // N_THREADS defined in Trip.h
-  
+  int RATE = 90;
+  int bias = 0;
+  float overall = std::numeric_limits<float>::max();
+  ofstream results_file("test_results.txt", ios::out | ios::app);
   // verify the arguments
   if ( argc == 2 )
-    nThreads = atoi( argv[1] );
+    //nThreads = atoi( argv[1] );
+    RATE = atoi(argv[1]);
   else {
     cout << "usage: Tsp #threads" << endl;
     if ( argc != 1 )
       return -1; // wrong arguments
   }
   cout << "# threads = " << nThreads << endl;
+  cout << "current rate " << RATE << endl;
+    // shortest path not yet initialized
+    shortest.itinerary[CITIES] = 0;  // null path
+    shortest.fitness = -1.0;         // invalid distance
 
-  // shortest path not yet initialized
-  shortest.itinerary[CITIES] = 0;  // null path
-  shortest.fitness = -1.0;         // invalid distance
+    // initialize 5000 trips and 36 cities' coordinates
+    initialize( trip, coordinates );
 
-  // initialize 5000 trips and 36 cities' coordinates
-  initialize( trip, coordinates );
+    // start a timer 
+    Timer timer;
+    timer.start( );
 
-  // start a timer 
-  Timer timer;
-  timer.start( );
+    // change # of threads
+    omp_set_num_threads( nThreads );
 
-  // change # of threads
-  omp_set_num_threads( nThreads );
+    // find the shortest path in each generation
+    for ( int generation = 0; generation < MAX_GENERATION; generation++ ) { //2; generation++){ //
 
-  // find the shortest path in each generation
-  for ( int generation = 0; generation < MAX_GENERATION; generation++ ) { //2; generation++){ //
+      // evaluate the distance of all 50000 trips
+      evaluate( trip, coordinates );
 
-    // evaluate the distance of all 50000 trips
-    evaluate( trip, coordinates );
-
-    // just print out the progress
-    if ( generation % 20 == 0 )
-      cout << "generation: " << generation << endl;
-
-    // whenever a shorter path was found, update the shortest path
-    if ( shortest.fitness < 0 || shortest.fitness > trip[0].fitness ) {
-
-      strncpy( shortest.itinerary, trip[0].itinerary, CITIES );
-      shortest.fitness = trip[0].fitness;
-
-      cout << "generation: " << generation 
-	   << " shortest distance = " << shortest.fitness
-	   << "\t itinerary = " << shortest.itinerary << endl;
-    }
-
-    // define TOP_X parents and offsprings.
-    Trip parents[TOP_X], offsprings[TOP_X];
-
-    // choose TOP_X parents from trip
-    select( trip, parents );
-
-    // generates TOP_X offsprings from TOP_X parenets
-    crossover( parents, offsprings, coordinates );
-    int cross = 0;
-    int mut = 0;
-    for (auto i = 0; i < TOP_X; i++)
-    {
-      for (auto j = 0; j < CITIES; j++)
+      // just print out the progress
+      if ( generation % 20 == 0 )
       {
-        if (!isalnum(offsprings[i].itinerary[j]))
-        {
-          cout << "index " << i << " is broken after crossover!" << endl;
-          cout << "trip " << offsprings[i].itinerary << endl;
-          cross ++;
-          break;
-        }
+        cout << "generation: " << generation << endl;
+        bias = (bias < 89 ? bias + 10 : 99);
       }
-    }
 
-    // mutate offsprings
-    mutate( offsprings );
+      // whenever a shorter path was found, update the shortest path
+      if ( shortest.fitness < 0 || shortest.fitness > trip[0].fitness ) {
 
-    for (auto i = 0; i < TOP_X; i++)
-    {
-      for (auto j = 0; j < CITIES; j++)
-      {
-        if (!isalnum(offsprings[i].itinerary[j]))
-        {
-          cout << "index " << i << " is broken after mutate!" << endl;
-          cout << "trip " << offsprings[i].itinerary << endl;
-          mut++;
-          break;
-        }
+        strncpy( shortest.itinerary, trip[0].itinerary, CITIES );
+        shortest.fitness = trip[0].fitness;
+            cout  << "generation: " << generation
+    << " shortest distance = " << shortest.fitness
+    << "\t itinerary = " << shortest.itinerary << endl;
       }
+
+      // define TOP_X parents and offsprings.
+      Trip parents[TOP_X], offsprings[TOP_X];
+
+      // choose TOP_X parents from trip
+      select( trip, parents );
+
+      // generates TOP_X offsprings from TOP_X parenets
+      crossover( parents, offsprings, coordinates );
+
+      // mutate offsprings
+      mutate( offsprings, RATE );
+
+      // populate the next generation.
+      populate( trip, offsprings );
     }
+    if (shortest.fitness < overall)
+      overall = shortest.fitness;
 
-    if(cross > 0 || mut > 0)
-      cout << "broken after crossing over: " << cross << "\nbroken after mutate: " << mut << endl;
-
-    // populate the next generation.
-    populate( trip, offsprings );
-  }
-
+    results_file << " shortest distance = " << shortest.fitness
+    << "\t itinerary = " << shortest.itinerary << endl;
+    cout  
+    << " shortest distance = " << shortest.fitness
+    << "\t itinerary = " << shortest.itinerary << endl;
+  
+    cout << "best found with MR: " << RATE << " is: " << overall << endl;
+    cout << "elapsed time = " << timer.lap( ) << endl;
+    results_file << "best found with MR: " << RATE << " is: " << overall << endl;
+    results_file << "elapsed time = " << timer.lap( ) << endl;
+    results_file.close();
   // stop a timer
-  cout << "elapsed time = " << timer.lap( ) << endl;
   return 0;
 }
 

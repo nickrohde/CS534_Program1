@@ -75,6 +75,12 @@
         return dist(engine);
     } // end template randomIntInRange
 
+    template<typename T>
+    inline T randomIntInRange2(T t_MIN, T t_MAX)
+    {
+        return (rand() % t_MAX) + t_MIN;
+    }
+
 
     /// <summary>
     ///          Generates a random <see cref="std::RealType"/> value in the range [<paramref name="t_MIN"/>,<paramref name="t_MAX"/>).
