@@ -5,6 +5,8 @@
 #include <math.h>    // sqrt, pow
 #include <omp.h>     // OpenMP
 #include <limits>    // float max
+#include <random>
+#include <time.h>
 #include <cctype>
 #include "Timer.h"
 #include "Trip.h"
@@ -31,6 +33,9 @@ int main( int argc, char* argv[] ) {
   int nThreads = N_THREADS; // N_THREADS defined in Trip.h
   int RATE = 90;
   int bias = 0;
+
+  srand((unsigned) time(NULL));
+
   float overall = std::numeric_limits<float>::max();
   ofstream results_file("test_results.txt", ios::out | ios::app);
   // verify the arguments

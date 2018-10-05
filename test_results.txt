@@ -123,3 +123,72 @@ elapsed time = 16614347
  shortest distance = 475.664	 itinerary = V1IO684NTXGK9FAL7R3DBPMSWC5HYZUJ0E2Q
 best found with MR: 74 is: 475.664
 elapsed time = 17208825
+ shortest distance = 485.35	 itinerary = V1IO68TN4AL7R3DBQPMSWC5HYZUE20J9FKXG
+best found with MR: 50 is: 485.35
+elapsed time = 16753224
+ shortest distance = 486.37	 itinerary = V1YZHUE2WSMPBQD3R7LAF9KGXNT48IO6J0C5
+best found with MR: 50 is: 486.37
+elapsed time = 16800765
+ shortest distance = 466.747	 itinerary = V1YZHUE025CWSMPBQD3R7LAFKGXNT948OI6J
+best found with MR: 50 is: 466.747
+elapsed time = 16761917
+ shortest distance = 506.723	 itinerary = V1IO684TNXGKL7DBPMSWC5HZYUE20J9FAR3Q
+best found with MR: 50 is: 506.723
+elapsed time = 16745161
+ shortest distance = 472.455	 itinerary = V1IO684TNXGF9KAL7R3DB20EJUZYH5CWSMPQ
+best found with MR: 50 is: 472.455
+elapsed time = 16775573
+ shortest distance = 459.383	 itinerary = V1YZHUE025CWSMPBDQ3R7LAF9KGXNT48OI6J
+best found with MR: 50 is: 459.383
+elapsed time = 16729346
+ shortest distance = 477.702	 itinerary = V1IO684TNXKFAL7R3DBQPMSWC5HYZUE20J9G
+best found with MR: 50 is: 477.702
+elapsed time = 16632001
+ shortest distance = 477.277	 itinerary = V1YZHUJ0E25CSWMPBQD3R7LAFK94NXGT86OI
+best found with MR: 47 is: 477.277
+elapsed time = 16630300
+ shortest distance = 463.751	 itinerary = V1YZH5CWSMPBQDR37LAF9KXGNT48OI6JUE02
+best found with MR: 90 is: 463.751
+elapsed time = 17436557
+ shortest distance = 496.738	 itinerary = V1YZHUEJLA7R3DBQPMSWC5206OI84TNX9FKG
+best found with MR: 99 is: 496.738
+elapsed time = 17570050
+ shortest distance = 487.343	 itinerary = V1YZHUE02WSC5MPBDQ3R7LAFK9NTGX48OI6J
+best found with MR: 90 is: 487.343
+elapsed time = 17470952
+ shortest distance = 464.955	 itinerary = V1YZHE0J9FAL7R3DDBPMSWC52U6OI84NTXKG
+best found with MR: 90 is: 464.955
+elapsed time = 17842100
+ shortest distance = 493.041	 itinerary = V1YHZULK9FA73RDDBPMSWC520EJ6OI84XGTN
+best found with MR: 99 is: 493.041
+elapsed time = 18015465
+ shortest distance = 460.308	 itinerary = V1IO684NTX97R3DBBPMSWC5HZYUE02JLAFKG
+best found with MR: 73 is: 460.308
+elapsed time = 17147270
+ shortest distance = 511.267	 itinerary = V1YZZUOI8TNXKLLR3DBPMSWC520EJ649FA7Q
+best found with MR: 69 is: 511.267
+elapsed time = 17058537
+ shortest distance = 458.177	 itinerary = VIIO884NTXFAL7R3DBQPMSWC5HZYUE20J9KG
+best found with MR: 50 is: 458.177
+elapsed time = 16833199
+ shortest distance = 492.9	 itinerary = V1IO84NTXKFA7DBPMSWC5HZYUE20J69FLR3Q
+best found with MR: 26 is: 492.9
+elapsed time = 16545028
+ shortest distance = 477.107	 itinerary = V1IO684NTXFL7DBBPMSWC5HZYUE20J9KGA3R
+best found with MR: 12 is: 477.107
+elapsed time = 16450558
+ shortest distance = 522.301	 itinerary = VVIO88TN4KFALR3BPMSWC5HYZUE02J9XG7DQ
+best found with MR: 10 is: 522.301
+elapsed time = 16692125
+ shortest distance = 521.325	 itinerary = V1IO684NTXFAL7R3DQPMSWC5HZYUE02BJ9KG
+best found with MR: 7 is: 521.325
+elapsed time = 16345371
+ shortest distance = 522.514	 itinerary = V1IO84NTXGKAL7DBPMSWC520EZHYUJ69FR3Q
+best found with MR: 50 is: 522.514
+elapsed time = 16947114
+ shortest distance = 496.535	 itinerary = V1YHZU9FAL7R3DBQPMSWC520EJ6OI84NTXKG
+best found with MR: 50 is: 496.535
+elapsed time = 16771637
+ shortest distance = 496.355	 itinerary = V1YZHU69FAL7R3DBQPMSWC520EJIO84NTXKG
+best found with MR: 50 is: 496.355
+elapsed time = 16963722

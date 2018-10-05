@@ -157,9 +157,10 @@
     {
         // keep track of visited cities with a binary array
         char* c_a_visited = new char[CITIES];
+        static double miss_count = 0, hit_count = 0;
         
         // iterate over all pairs of parents
-        for (auto i = 0; i < TOP_X - 1; i+= 2)
+        for (auto i = 0; i < TOP_X ; i+= 2)
         {
             memset(c_a_visited, '0', static_cast<std::size_t>(CITIES));
 
@@ -168,7 +169,6 @@
             auto& p2 = parents[i+1];
             auto& c1 = offsprings[i];
             auto& c2 = offsprings[i+1];
-            bool broke = false;
 
             // source city of the trip from parent 1
             c1.itinerary[0] = p1.itinerary[0];
@@ -179,55 +179,62 @@
             
             for (auto j = 1; j < CITIES; j++)
             {
-                auto index_p1 = translateToIndex(p1.itinerary[j]);
-                auto index_p2 = translateToIndex(p2.itinerary[j]);
-                auto index_source = translateToIndex(c1.itinerary[j-1]);
-
-                float source_p1 = distance(coordinates[index_source][0], coordinates[index_source][1], coordinates[index_p1][0], coordinates[index_p1][1]);
-                float source_p2 = distance(coordinates[index_source][0], coordinates[index_source][1], coordinates[index_p2][0], coordinates[index_p2][1]);
+                auto ui_index_p1 = translateToIndex(p1.itinerary[j]);
+                auto ui_index_p2 = translateToIndex(p2.itinerary[j]);
 
                 // next city for both parents has already been visited
-                if (c_a_visited[index_p1] != '0' && c_a_visited[index_p2] != '0')
+                if (c_a_visited[ui_index_p1] != '0' && c_a_visited[ui_index_p2] != '0')
                 {
-                    std::size_t picked = randomIntInRange<std::size_t>(0,CITIES-1);
-                    while(c_a_visited[picked] != '0')
+                    miss_count += 1;
+                    auto ui_picked = randomIntInRange<std::size_t>(0,CITIES-1);
+
+                    while(c_a_visited[ui_picked] != '0')
                     {
-                        picked = randomIntInRange<std::size_t>(0,CITIES-1);
+                        ui_picked = randomIntInRange<std::size_t>(0,CITIES-1);
                     }
 
-                    c_a_visited[picked] = '1';
-                    c1.itinerary[j] = translateToCity(picked);
+                    c_a_visited[ui_picked] = '1';
+                    c1.itinerary[j] = translateToCity(ui_picked);
                 } // end if
-                else if (source_p1 < source_p2)
-                {
-                    if (c_a_visited[index_p1] == '0')
-                    {
-                        c_a_visited[index_p1] = '1';
-                        c1.itinerary[j] = p1.itinerary[j];
-                    } // end if
-                    else
-                    {
-                        c_a_visited[index_p2] = '1';
-                        c1.itinerary[j] = p2.itinerary[j];
-                    } // end else
-                } // end elif
                 else
                 {
-                    if (c_a_visited[index_p2] == '0')
+                    hit_count += 1;   
+                    auto ui_index_source = translateToIndex(c1.itinerary[j-1]);
+                    auto f_source_p1 = distance<float>(coordinates[ui_index_source][0], coordinates[ui_index_source][1], coordinates[ui_index_p1][0], coordinates[ui_index_p1][1]);
+                    auto f_source_p2 = distance<float>(coordinates[ui_index_source][0], coordinates[ui_index_source][1], coordinates[ui_index_p2][0], coordinates[ui_index_p2][1]);
+                    
+                    if (f_source_p1 < f_source_p2)
                     {
-                        c_a_visited[index_p2] = '1';
-                        c1.itinerary[j] = p2.itinerary[j];
-                    } // end if
+                        if (c_a_visited[ui_index_p1] == '0')
+                        {
+                            c_a_visited[ui_index_p1] = '1';
+                            c1.itinerary[j] = p1.itinerary[j];
+                        } // end if
+                        else
+                        {
+                            c_a_visited[ui_index_p2] = '1';
+                            c1.itinerary[j] = p2.itinerary[j];
+                        } // end else
+                    } // end elif
                     else
                     {
-                        c_a_visited[index_p1] = '1';
-                        c1.itinerary[j] = p1.itinerary[j];
+                        if (c_a_visited[ui_index_p2] == '0')
+                        {
+                            c_a_visited[ui_index_p2] = '1';
+                            c1.itinerary[j] = p2.itinerary[j];
+                        } // end if
+                        else
+                        {
+                            c_a_visited[ui_index_p1] = '1';
+                            c1.itinerary[j] = p1.itinerary[j];
+                        } // end else
                     } // end else
-                } // end else
+                }
             } // end for j
 
             generateComplement(c1.itinerary, c2.itinerary);
         } // end for i
+
 
         delete[] c_a_visited;
     } // end method crossover
@@ -259,14 +266,14 @@
             if (randomIntInRange2<int>(0,100) <= RATE)
             {
                 // pick two random cities
-                //auto i = randomIntInRange2<std::size_t>(0, (CITIES-1)/2);
-                //auto j = randomIntInRange2<std::size_t>((CITIES-1)/2, CITIES-1);
-                auto i = randomIntInRange2<std::size_t>(0, CITIES-1);
-                auto j = randomIntInRange2<std::size_t>(0, CITIES-1);
+                auto i = randomIntInRange<std::size_t>(0, (CITIES-1)/2);
+                auto j = randomIntInRange<std::size_t>((CITIES-1)/2, CITIES-1);
+                //auto i = randomIntInRange<std::size_t>(0, CITIES-1);
+                //auto j = randomIntInRange<std::size_t>(0, CITIES-1);
 
                 while ( i == j)
                 {
-                    j = randomIntInRange2<std::size_t>(0, CITIES-1);
+                    j = randomIntInRange<std::size_t>(0, CITIES-1);
                 }
 
                 char temp = offsprings[cur].itinerary[i];
