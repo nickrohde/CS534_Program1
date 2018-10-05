@@ -192,3 +192,9 @@ elapsed time = 16771637
  shortest distance = 496.355	 itinerary = V1YZHU69FAL7R3DBQPMSWC520EJIO84NTXKG
 best found with MR: 50 is: 496.355
 elapsed time = 16963722
+ shortest distance = 521.611	 itinerary = V1IO684NTXGKFL7DBPMSWC5HZYUE02J9A3RQ
+best found with MR: 50 is: 521.611
+elapsed time = 16788110
+ shortest distance = 483.722	 itinerary = V1IO684NTFAL7R3DBQPMSWC5HZYUE20J9KXG
+best found with MR: 50 is: 483.722
+elapsed time = 16673769

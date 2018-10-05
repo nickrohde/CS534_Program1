@@ -6,7 +6,7 @@
     #include "utility.hpp" // RNG
     #include "string.h"    // memset
     #include <iostream>
-    #include <map>         // hash map
+    #include <unordered_map> // hash map
 
 #pragma endregion
 
@@ -22,7 +22,7 @@
     std::size_t translateToIndex(const char c_city) noexcept;
     char translateToCity(const std::size_t ui_index) noexcept;
     char getComplement(const char c_city);
-    void makeLookupTable(std::map<char,char>& c2c_complements);
+    void makeLookupTable(std::unordered_map<char,char>& c2c_complements);
 
 #pragma endregion
 
@@ -86,18 +86,23 @@
     inline char getComplement(const char c_city)
     {
         static bool first = true;
-        static std::map<char, char> c2c_complements;
+        static std::unordered_map<char, char> c2c_complements;
 
-        if (first)
+        // we do not want multiple threads to construct the map below
+        // so we need to make sure only 1 thread checks 'first' at a time
+        #pragma omp critical
         {
-            makeLookupTable(c2c_complements);
-            first = false;
-        } // end if
+            if (first)
+            {
+                makeLookupTable(c2c_complements);
+                first = false;
+            } // end if
+        } // end critical
 
         return c2c_complements.find(c_city)->second;
     } // end method getComplement
 
-    void makeLookupTable(std::map<char,char>& c2c_complements)
+    void makeLookupTable(std::unordered_map<char,char>& c2c_complements)
     {
         // ABCDEFGHIJKLMNOPQR STUVWXYZ0123456789
         // 9876543210ZYXWVUTS RQPONMLKJIHGFEDCBA
@@ -156,7 +161,7 @@
     void crossover(const Trip parents[TOP_X], Trip offsprings[TOP_X], const int coordinates[CITIES][2])
     {
         // keep track of visited cities with a binary array
-        char* c_a_visited = new char[CITIES];
+        char* c_a_visited = new char[CITIES]; 
         static double miss_count = 0, hit_count = 0;
         
         // iterate over all pairs of parents
