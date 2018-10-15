@@ -6,8 +6,15 @@
 
     #include <random>        // random device, mersenne twister, uniform distributions
     #include <unordered_map> // hash map
-    #include <cmath>
-    #include <omp.h>
+	#include <chrono>		 // timer
+
+#pragma endregion
+
+
+#pragma region Typedefs
+
+typedef std::chrono::high_resolution_clock::time_point	timePoint;
+typedef std::chrono::high_resolution_clock				highRes_Clock;
 
 #pragma endregion
 
@@ -15,8 +22,20 @@
 #pragma region Defines:
 
     #ifndef NULL
-        #define NULL 0
+        #define NULL (void*)0
     #endif
+	#ifndef EXIT_SUCCESS
+		#define EXIT_SUCCESS 0
+	#endif
+	#ifndef EXIT_FAILURE
+		#define EXIT_FAILURE 1
+	#endif
+	#ifndef ENABLE_STD_OUT
+		#define ENABLE_STD_OUT 1
+	#endif
+	#ifndef TOURNAMENT_SIZE
+		#define TOURNAMENT_SIZE    20     // number of participants in a tournament
+	#endif
 
 #pragma endregion
 
@@ -28,12 +47,13 @@
         int x;
         int y;
         Point(int xval, int yval) {x = xval; y = yval;}
+		Point() { x = 0; y = 0; }
 
         inline bool operator==(const Point& OTHER) const
         {
             return x == OTHER.x && y == OTHER.y;
-        }
-    };
+        } // end operator ==
+    }; // end struct Point
 
     namespace std
     {
@@ -59,10 +79,9 @@
                 long long A = p.x >= 0 ? 2 * p.x : -2 * p.x - 1;
                 long long B = p.y >= 0 ? 2 * p.y : -2 * p.y - 1;
                 return A >= B ? static_cast<std::size_t>(abs(A * A + A + B)) : static_cast<std::size_t>(abs(A + B * B));
-            }
-        };
-    }
-
+            } // end operator ()
+        }; // end struct hash<Point>
+    } // end std
 
 #pragma endregion
 
@@ -98,33 +117,6 @@
     } // end template distance
 
 
-    inline float distanceV2(Point& p1, Point& p2)
-    {
-        float result = 0.0;
-        // only one thread should modify the data structure at a time
-        #pragma omp critical
-        {
-            static std::unordered_map<Point, std::unordered_map<Point, float>> p2p_knownDistances;
-
-            // check if distance calculation has been memoized
-            if(p2p_knownDistances.find(p1) != p2p_knownDistances.end() && p2p_knownDistances.find(p1)->second.find(p2) != p2p_knownDistances.find(p1)->second.end())
-            {
-                result = p2p_knownDistances.find(p1)->second.find(p2)->second;
-            } // end if
-            if (p2p_knownDistances.find(p2) != p2p_knownDistances.end() && p2p_knownDistances.find(p2)->second.find(p1) != p2p_knownDistances.find(p2)->second.end())
-            {
-                result = p2p_knownDistances.find(p2)->second.find(p1)->second;
-            } // end if
-
-            // new distance calculation, create memoization record and return value
-            result = distance(p1.x, p1.y, p2.x, p2.y);
-            p2p_knownDistances[p1].insert(std::pair<Point, float>(p2, result));
-        } // end critical
-
-        return result;
-    } // end method distanceV2
-
-
     /// <summary>
     ///          Generates a random <see cref="std::IntType"/> value in the range [<paramref name="t_MIN"/>,<paramref name="t_MAX"/>].
     /// </summary>
@@ -150,40 +142,6 @@
 
         return dist(engine);
     } // end template randomIntInRange
-
-    template<typename T>
-    inline T randomIntInRange2(T t_MIN, T t_MAX)
-    {
-        return (rand() % t_MAX) + t_MIN;
-    }
-
-
-    /// <summary>
-    ///          Generates a random <see cref="std::RealType"/> value in the range [<paramref name="t_MIN"/>,<paramref name="t_MAX"/>).
-    /// </summary>
-    /// <typeparam name="T">
-    ///                     Some <see cref="std::RealType"/> to initialize the random engine to.
-    /// </typeparam>
-    /// <param name="t_MIN">
-    ///                    Minimum value of the real distribution (inclusive).
-    /// </param>
-    /// <param name="t_MAX">
-    ///                    Maximum value of the real distribution (exclusive).
-    /// </param>
-    /// <returns>
-    ///          A pseudo-random value in the given range.
-    /// </returns>
-    /// <exception cref=""></exception>
-    template<typename T>
-    inline T randomRealInRange(const T t_MIN, const T t_MAX)
-    {
-        static std::random_device rd{};
-        static std::mt19937 engine{rd()};
-        std::uniform_real_distribution<T> dist{t_MIN, t_MAX};
-
-        return dist(engine);
-    } // end template randomRealInRange
-
 
 #pragma endregion
 
