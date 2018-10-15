@@ -1,7 +1,7 @@
 # source files:
 INIT_SRC=initialize.cpp
 GA_SRC=EvalXOverMutate.cpp
-PROG_SRC=Tsp.cpp
+PROG_SRC=Tsp_nix.cpp
 TIMER_SRC=Timer.cpp
 
 # object files:
@@ -35,6 +35,7 @@ endif
 
 # generic flags:
 CFLAGS := $(STD) -Werror -pipe -Ofast -msse4 -ffast-math -ffinite-math-only
+LAB_CFLAGS := $(STD) -Werror -pipe -Ofast -msse4 
 COMP_ONLY=-c
 DRY_RUN_FLAGS := -fsyntax-only $(STD)
 
@@ -53,7 +54,7 @@ all: $(OUTFILE)
 clean_build: clean
 	make all
 
-$(OUTFILE): $(INIT) $(GA_OBJ) $(TIMER_OBJ)
+$(OUTFILE): $(GA_OBJ) $(TIMER_OBJ)
 	$(CXX) $(PROG_SRC) $(PROG_DEPS) $(PROG_FLAGS) $(CFLAGS) -o $(OUTFILE)
 	
 $(GA_OBJ): 
@@ -68,5 +69,21 @@ $(INIT):
 clean:
 	rm -f $(OUTFILE) $(INIT) $(GA_OBJ) $(TIMER_OBJ) 
 
+lab: $(TIMER_OBJ) monte integral monte_omp integral_omp
+
+clean_lab:
+	rm -f monte monte_omp integral integral_omp Timer.o
+
+monte:
+	$(CXX) pi_monte.cpp Timer.o $(LAB_CFLAGS) -o monte
+
+integral:
+	$(CXX) pi_integral.cpp Timer.o $(LAB_CFLAGS) -o integral
+
+monte_omp:
+	$(CXX) pi_monte_omp.cpp Timer.o $(PROG_FLAGS) $(LAB_CFLAGS) -o monte_omp
+
+integral_omp:
+	$(CXX) pi_integral_omp.cpp Timer.o $(PROG_FLAGS) $(LAB_CFLAGS) -o integral_omp
 
 

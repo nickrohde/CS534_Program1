@@ -1,0 +1,23 @@
+nick@nick-laptop:~/Projects/4_Fall_18/CS534/CS534_Program1$ ./monte_omp 
+Enter the number of iterations used to estimate pi: 100000000
+Enter the number of threads to run: 4
+elapsed time for pi = 75091481
+# of trials = 100000000, estimate of pi is  3.1388485299999997, Error is 0.0027441235897934
+nick@nick-laptop:~/Projects/4_Fall_18/CS534/CS534_Program1$ ./monte_omp 
+Enter the number of iterations used to estimate pi: 100000000
+Enter the number of threads to run: 1
+elapsed time for pi = 71040271
+# of trials = 100000000, estimate of pi is  3.1397217400000001, Error is 0.0018709135897930
+
+
+nick@nick-laptop:~/Projects/4_Fall_18/CS534/CS534_Program1$ ./integral 
+Etner the number of iterations used to estimate pi: 100000000
+elapsed time for pi = 1660070
+# of trials = 100000000, estimate of pi is  3.1415926535900236, Error is 0.0000000000002305
+[1]+  Done                    gedit output_lab.txt
+nick@nick-laptop:~/Projects/4_Fall_18/CS534/CS534_Program1$ ./integral_omp 
+Enter the number of iterations used to estimate pi: 100000000
+Enter the number of threads to run: 4
+elapsed time for pi = 902955
+# of trials = 100000000, estimate of pi is  3.1415926535898353, Error is 0.0000000000000422
+
